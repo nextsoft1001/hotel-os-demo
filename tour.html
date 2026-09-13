@@ -1,0 +1,743 @@
+<title>The Sixty-Second Tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+/* Single committed look: a dark theatre for a light product.
+   Every colour is painted explicitly so the page holds on any host ground. */
+:root{
+  --night:#08130D;
+  --emerald:#1E4634;
+  --emerald-lit:#2E6B50;
+  --jade:#5FBF8F;
+  --gold:#C9A96E;
+  --gold-lit:#E8CE96;
+  --linen:#F1EBDD;
+  --paper:#FBF8F1;
+  --paper-2:#F1EDE1;
+  --ink:#1E3429;
+  --slate:#6E8076;
+  --hair:#E2DCCB;
+  --coral:#C4674A;
+  --serif:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+body{ margin:0; background:var(--night); color:var(--linen);
+  font-family:var(--sans); font-size:15px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(120% 80% at 50% -10%, #143024 0%, var(--night) 62%); }
+.shell{ max-width:940px; margin:0 auto; padding:22px 20px 40px; }
+
+/* ---- masthead ---- */
+.mast{ display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
+.crest{ width:34px; height:34px; border:1px solid var(--gold); transform:rotate(45deg);
+  display:flex; align-items:center; justify-content:center; flex:none; }
+.crest b{ transform:rotate(-45deg); font-family:var(--serif); color:var(--gold-lit);
+  font-size:15px; font-weight:600; }
+.mast__t{ font-family:var(--serif); font-size:17px; font-weight:600; color:var(--linen); }
+.mast__s{ font-family:var(--sans); font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--gold); }
+.sound{ margin-left:auto; display:inline-flex; align-items:center; gap:9px; cursor:pointer;
+  font-family:var(--sans); font-size:12.5px; font-weight:600; color:#0F2015;
+  background:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:9px 17px; }
+.sound:hover{ background:var(--gold-lit); }
+.sound.on{ background:transparent; color:#A9BCAE; border-color:#2C4A3B; font-weight:500; }
+.sound svg{ width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:1.9;
+  stroke-linecap:round; stroke-linejoin:round; }
+
+/* ---- caption ---- */
+.cap{ min-height:104px; padding-bottom:14px; }
+.cap__n{ font-family:var(--mono); font-size:11px; color:var(--gold); letter-spacing:.14em; }
+.cap h2{ font-family:var(--serif); font-weight:600; font-size:clamp(22px,3.4vw,32px);
+  line-height:1.18; margin:7px 0 0; color:var(--linen); text-wrap:balance; letter-spacing:-.01em; }
+.cap p{ margin:7px 0 0; font-size:15px; color:#A9BCAE; max-width:62ch; }
+
+/* ---- stage ---- */
+.stage{ position:relative; background:var(--paper); border:1px solid #2C4A3B; border-radius:12px;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.9), 0 0 0 1px rgba(201,169,110,.14);
+  overflow:hidden; min-height:392px; }
+.scene{ display:none; padding:22px; }
+.scene.on{ display:block; }
+.scene__hd{ display:flex; align-items:baseline; gap:12px; padding-bottom:14px;
+  border-bottom:1px solid var(--hair); margin-bottom:16px; }
+.scene__hd b{ font-family:var(--serif); font-size:19px; color:var(--ink); font-weight:600; }
+.scene__hd span{ font-size:12px; color:var(--slate); margin-left:auto; font-variant-numeric:tabular-nums; }
+
+.row{ display:flex; align-items:center; gap:12px; padding:11px 13px; background:#fff;
+  border:1px solid var(--hair); border-radius:8px; margin-bottom:8px; }
+.row b{ font-family:var(--serif); font-size:15px; color:var(--ink); font-weight:600; }
+.row small{ display:block; font-size:11.5px; color:var(--slate); font-weight:400; }
+.row .grow{ flex:1; min-width:0; }
+.btn{ font-family:var(--sans); font-size:11.5px; font-weight:600; letter-spacing:.05em;
+  padding:7px 13px; border-radius:6px; border:1px solid var(--emerald);
+  background:var(--emerald); color:var(--paper); white-space:nowrap; }
+.btn.hot{ background:var(--gold); border-color:#A8823C; color:#241a08; }
+.btn.press{ animation:press .5s ease; }
+@keyframes press{ 0%{ transform:scale(1) } 40%{ transform:scale(.93) } 100%{ transform:scale(1) } }
+.tag{ font-family:var(--sans); font-size:10px; font-weight:600; letter-spacing:.1em;
+  text-transform:uppercase; padding:3px 8px; border-radius:4px; border:1px solid currentColor; }
+.t-gold{ color:#8A6F3C; background:#F7EFDC; }
+
+/* timers */
+.clockwrap{ display:flex; align-items:center; justify-content:center; padding:30px 0 22px; }
+.clock{ font-family:var(--mono); font-size:clamp(44px,8.5vw,70px); font-weight:500; color:var(--ink);
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em; line-height:1; text-align:center; }
+.clock.slow{ color:var(--coral); }
+.clock.fast{ color:var(--emerald-lit); }
+.clocklbl{ font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--slate);
+  text-align:center; margin-top:9px; }
+.queue{ display:flex; gap:7px; justify-content:center; margin-top:6px; }
+.queue i{ width:11px; height:26px; border-radius:3px; background:#DFD8C6; display:block; }
+.queue i.w{ background:var(--coral); opacity:.75; }
+
+/* rack */
+.rack{ display:grid; grid-template-columns:repeat(16,1fr); gap:5px; padding:6px 0 12px; }
+.rack i{ aspect-ratio:1/1.25; border-radius:2px; background:#E6EDE6; display:block;
+  transition:background .5s ease, box-shadow .5s ease; }
+.rack i.occ{ background:linear-gradient(180deg,#E8C887,#C9A96E); box-shadow:0 0 8px rgba(201,169,110,.55); }
+.rack i.arr{ background:#8BB8D8; }
+.rack i.dirty{ background:#E9C88A; }
+.rack i.ooo{ background:#E0A08C; }
+.legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:11.5px; color:var(--slate); padding-top:10px;
+  border-top:1px solid var(--hair); }
+.legend span{ display:flex; align-items:center; gap:6px; }
+.legend em{ width:10px; height:10px; border-radius:2px; font-style:normal; }
+
+/* the sweep - sidebar of all 18 modules */
+.sweep{ display:grid; grid-template-columns:236px 1fr; gap:16px; }
+@media(max-width:640px){ .sweep{ grid-template-columns:1fr; } .sweep__scr{ display:none; } }
+.sweep__rail{ background:linear-gradient(180deg,#0F2C21,#123528); border-radius:9px; padding:11px 0;
+  max-height:288px; overflow:hidden; }
+.sweep__grp{ font-size:8.5px; letter-spacing:.2em; text-transform:uppercase; color:#6F8B7C;
+  padding:9px 15px 4px; }
+.sweep__i{ padding:5px 15px; font-size:12.5px; color:#A7BCA9; display:flex; align-items:center; gap:8px;
+  border-left:2px solid transparent; transition:color .2s, background .2s, border-color .2s; }
+.sweep__i::before{ content:""; width:4px; height:4px; border-radius:50%; background:#4E6B58; flex:none; }
+.sweep__i.lit{ color:#FFF7E8; background:rgba(255,255,255,.09); border-left-color:var(--gold); }
+.sweep__i.lit::before{ background:var(--gold); }
+.sweep__scr{ background:#fff; border:1px solid var(--hair); border-radius:9px; padding:16px;
+  display:flex; flex-direction:column; }
+.sweep__ttl{ font-family:var(--serif); font-size:20px; color:var(--ink); font-weight:600; }
+.sweep__bars{ margin-top:14px; display:flex; flex-direction:column; gap:7px; flex:1; }
+.sweep__bars i{ height:9px; border-radius:3px; background:var(--paper-2); display:block; }
+.sweep__bars i:nth-child(1){ width:72%; } .sweep__bars i:nth-child(2){ width:94%; }
+.sweep__bars i:nth-child(3){ width:58%; } .sweep__bars i:nth-child(4){ width:81%; }
+.sweep__bars i:nth-child(5){ width:66%; }
+.sweep__n{ font-family:var(--mono); font-size:11.5px; color:var(--slate); margin-top:10px; }
+
+/* transport */
+.trip{ display:flex; align-items:center; gap:12px; padding:12px 13px; background:#fff;
+  border:1px solid var(--hair); border-radius:8px; margin-bottom:8px;
+  opacity:0; transform:translateY(6px); transition:opacity .45s ease, transform .45s ease; }
+.trip.in{ opacity:1; transform:none; }
+.trip__t{ font-family:var(--mono); font-size:13px; color:var(--emerald-lit); font-weight:500; flex:none; }
+.trip b{ font-family:var(--serif); font-size:14.5px; color:var(--ink); font-weight:600; }
+.trip small{ display:block; font-size:11.5px; color:var(--slate); }
+.trip .veh{ margin-left:auto; text-align:right; font-size:12px; color:var(--slate); flex:none; }
+.trip .veh b{ font-family:var(--sans); font-size:12.5px; color:var(--ink); display:block; }
+.sent{ text-align:center; font-size:13px; color:var(--emerald-lit); font-weight:600;
+  opacity:0; transition:opacity .5s ease; margin-top:6px; }
+.sent.in{ opacity:1; }
+
+/* invoice */
+.inv{ background:#fff; border:1px solid var(--hair); border-radius:8px; padding:18px 20px;
+  font-family:var(--serif); color:var(--ink); }
+.inv__hd{ display:flex; justify-content:space-between; align-items:baseline;
+  border-bottom:1px dashed var(--hair); padding-bottom:10px; margin-bottom:12px; }
+.inv__no{ font-family:var(--mono); font-size:13px; color:#8A6F3C; }
+.inv table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+.inv td{ padding:4px 0; }
+.inv td.r{ text-align:right; font-variant-numeric:tabular-nums; }
+.inv tr.tot td{ border-top:1px solid var(--hair); padding-top:9px; font-size:16px; font-weight:600; }
+.inv__words{ margin-top:9px; font-size:12px; color:var(--slate); font-style:italic; }
+
+/* the wall */
+.two{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:640px){ .two{ grid-template-columns:1fr; } }
+.panel{ background:#fff; border:1px solid var(--hair); border-radius:8px; overflow:hidden; }
+.panel__hd{ padding:10px 13px; background:var(--emerald); color:var(--paper);
+  font-size:12px; font-weight:600; letter-spacing:.04em; }
+.panel__hd.alt{ background:#3E5A4C; }
+.menu{ list-style:none; margin:0; padding:8px; }
+.menu li{ padding:8px 10px; font-size:13px; color:var(--ink); border-radius:5px;
+  display:flex; align-items:center; gap:9px; transition:opacity .45s ease, transform .45s ease; }
+.menu li::before{ content:""; width:5px; height:5px; border-radius:50%; background:var(--emerald-lit); flex:none; }
+.menu li.gone{ opacity:0; transform:translateX(-10px); }
+
+/* the site */
+.sitecard{ border-radius:8px; overflow:hidden; border:1px solid var(--hair); background:#fff; }
+.sitebar{ height:26px; background:var(--paper-2); display:flex; align-items:center; gap:5px; padding:0 10px; }
+.sitebar i{ width:8px; height:8px; border-radius:50%; background:#CFC8B6; }
+.sitebar span{ margin-left:8px; font-family:var(--mono); font-size:10.5px; color:var(--slate); }
+.sitehero{ padding:24px 20px; text-align:center; background:linear-gradient(160deg,#F6E4D6,#EFD9C6); }
+.sitehero b{ display:block; font-family:var(--serif); font-size:25px; color:#3A2317; font-weight:600; }
+.sitehero small{ display:block; font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:#9E7A50; margin-top:5px; }
+.sitehero .bk{ display:inline-block; margin-top:14px; background:#C9A25E; color:#2C1A0E;
+  font-size:11.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  padding:9px 18px; border-radius:5px; }
+.moneyrow{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.money{ background:#fff; border:1px solid var(--hair); border-radius:8px; padding:12px 14px; }
+.money b{ display:block; font-family:var(--serif); font-size:23px; color:var(--ink); font-weight:600;
+  font-variant-numeric:tabular-nums; }
+.money.bad b{ color:var(--coral); }
+.money span{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+
+/* close */
+.close{ text-align:center; padding:24px 10px; }
+.close h3{ font-family:var(--serif); font-size:clamp(21px,3.2vw,29px); color:var(--ink);
+  font-weight:600; margin:0; text-wrap:balance; }
+.close p{ color:var(--slate); font-size:14.5px; margin:10px auto 0; max-width:46ch; }
+.close__acts{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+.cta{ display:inline-flex; align-items:center; gap:9px; font-family:var(--sans); font-size:13.5px;
+  font-weight:600; padding:13px 22px; border-radius:8px; text-decoration:none;
+  background:var(--emerald); color:var(--paper); border:1px solid var(--emerald); }
+.cta.wa{ background:#1F9D55; border-color:#1F9D55; }
+.cta.ghost{ background:#fff; color:var(--emerald); }
+.close__fine{ font-size:12px; color:var(--slate); margin-top:16px; }
+
+/* controls */
+.bar{ display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap; }
+.dots{ display:flex; gap:6px; flex:1; min-width:190px; }
+.dot{ height:4px; flex:1; background:#254234; border-radius:3px; overflow:hidden; cursor:pointer;
+  border:none; padding:0; }
+.dot i{ display:block; height:100%; width:0; background:var(--gold); border-radius:3px; }
+.dot.done i{ width:100%; }
+.ctrl{ display:flex; align-items:center; gap:8px; }
+.ctrl button{ font-family:var(--sans); font-size:12px; color:#A9BCAE; background:none;
+  border:1px solid #2C4A3B; border-radius:6px; padding:7px 13px; cursor:pointer; }
+.ctrl button:hover{ color:var(--linen); border-color:var(--gold); }
+.foot{ margin-top:20px; font-size:11.5px; color:#6E8076; text-align:center; }
+:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+@media (prefers-reduced-motion:reduce){ *{ transition-duration:.01ms !important; } }
+</style>
+
+<div class="shell">
+
+  <div class="mast">
+    <div class="crest"><b id="crestLetter">K</b></div>
+    <div>
+      <div class="mast__t" id="brandLine">Kaveri Grand</div>
+      <div class="mast__s">The ninety-second tour</div>
+    </div>
+    <button class="sound" id="sound" type="button">
+      <svg viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6a8 8 0 0 1 0 12"/></svg>
+      <span id="soundTxt">Turn on sound</span>
+    </button>
+  </div>
+
+  <div class="cap">
+    <div class="cap__n" id="capN">01 / 09</div>
+    <h2 id="capH">Every check-in takes three to five minutes.</h2>
+    <p id="capP">Find the booking. Photocopy the ID. Hunt for a clean room. Write it in the register. The guest stands there through all of it.</p>
+  </div>
+
+  <div class="stage" id="stage">
+
+    <!-- 1 problem -->
+    <section class="scene on" data-s="0">
+      <div class="scene__hd"><b>Front desk &#8212; the way it works today</b><span>Guest waiting</span></div>
+      <div class="clockwrap"><div>
+        <div class="clock slow" id="clockSlow">0:00</div>
+        <div class="clocklbl">Time at the desk</div>
+      </div></div>
+      <div class="queue" id="queue"></div>
+      <p style="text-align:center;color:#6E8076;font-size:13px;margin-top:14px;">
+        And behind him, three more arrivals from the same flight.</p>
+    </section>
+
+    <!-- 2 express check-in -->
+    <section class="scene" data-s="1">
+      <div class="scene__hd"><b>Arrivals</b><span id="ciStamp">&#8212;</span></div>
+      <div class="row">
+        <div class="grow">
+          <b>V. Prakash &amp; family</b>
+          <small>Stayed 6 times &#183; ID on file &#183; card on file &#183; prefers a high floor</small>
+        </div>
+        <span class="tag t-gold">Returning</span>
+        <button class="btn hot" id="xbtn">Express check-in</button>
+      </div>
+      <div class="clockwrap"><div>
+        <div class="clock fast" id="clockFast">0.0s</div>
+        <div class="clocklbl" id="fastLbl">Room 412 &#183; key issued</div>
+      </div></div>
+    </section>
+
+    <!-- 3 rack -->
+    <section class="scene" data-s="2">
+      <div class="scene__hd"><b>Room rack</b><span>96 rooms &#183; live</span></div>
+      <div class="rack" id="rack"></div>
+      <div class="legend">
+        <span><em style="background:linear-gradient(180deg,#E8C887,#C9A96E)"></em> Occupied</span>
+        <span><em style="background:#8BB8D8"></em> Arriving today</span>
+        <span><em style="background:#E9C88A"></em> To be cleaned</span>
+        <span><em style="background:#E6EDE6"></em> Ready to sell</span>
+        <span><em style="background:#E0A08C"></em> Out of order</span>
+      </div>
+    </section>
+
+    <!-- 4 the sweep: all 18 modules -->
+    <section class="scene" data-s="3">
+      <div class="scene__hd"><b>One system, eighteen desks</b><span id="sweepN">&#8212;</span></div>
+      <div class="sweep">
+        <div class="sweep__rail" id="sweepRail"></div>
+        <div class="sweep__scr">
+          <div class="sweep__ttl" id="sweepTtl">Dashboard</div>
+          <div class="sweep__bars"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="sweep__n">Everything included &#8212; nothing is an add-on.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 transport -->
+    <section class="scene" data-s="4">
+      <div class="scene__hd"><b>Transport desk</b><span>Airport runs today</span></div>
+      <div id="trips">
+        <div class="trip"><span class="trip__t">14:05</span>
+          <div class="grow"><b>V. Prakash &amp; family</b><small>6E 384 arriving &#183; Terminal 1</small></div>
+          <div class="veh"><b>TN 37 BX 4412</b>Innova &#183; Driver DR-03</div></div>
+        <div class="trip"><span class="trip__t">17:40</span>
+          <div class="grow"><b>Elgi Equipments &#8212; 3 guests</b><small>Drop to airport</small></div>
+          <div class="veh"><b>TN 37 CQ 9080</b>Crysta &#183; Driver DR-01</div></div>
+        <div class="trip"><span class="trip__t">21:15</span>
+          <div class="grow"><b>Ms. J. Fernandes</b><small>Rail &#183; Coimbatore Junction</small></div>
+          <div class="veh"><b>TN 37 BX 4412</b>Innova &#183; Driver DR-05</div></div>
+      </div>
+      <div class="sent" id="sent">Chauffeur name and number sent to the guest on WhatsApp</div>
+    </section>
+
+    <!-- 6 the bill -->
+    <section class="scene" data-s="5">
+      <div class="scene__hd"><b>Checkout</b><span>Invoice issued automatically</span></div>
+      <div class="inv">
+        <div class="inv__hd">
+          <div><b style="font-size:16px;">TAX INVOICE</b>
+            <div style="font-size:11px;color:#6E8076;font-family:var(--sans);margin-top:3px;">
+              GSTIN 33AABCK1234M1Z5 &#183; Place of supply: Tamil Nadu</div></div>
+          <div class="inv__no" id="invNo">&nbsp;</div>
+        </div>
+        <table>
+          <tr><td>Room 412 &#8212; 3 nights <span style="color:#6E8076;font-size:11.5px;">SAC 996311</span></td><td class="r">&#8377;14,250</td></tr>
+          <tr><td>Restaurant <span style="color:#6E8076;font-size:11.5px;">SAC 996331</span></td><td class="r">&#8377;3,180</td></tr>
+          <tr><td>CGST 6% + SGST 6%</td><td class="r">&#8377;2,091</td></tr>
+          <tr class="tot"><td>Total</td><td class="r">&#8377;19,521</td></tr>
+        </table>
+        <div class="inv__words">Rupees Nineteen Thousand Five Hundred and Twenty One only</div>
+      </div>
+    </section>
+
+    <!-- 7 the wall -->
+    <section class="scene" data-s="6">
+      <div class="scene__hd"><b>Two staff, two logins</b><span>Enforced in the database</span></div>
+      <div class="two">
+        <div class="panel">
+          <div class="panel__hd">Signed in as &#8212; Owner</div>
+          <ul class="menu">
+            <li>Front desk</li><li>Room rack</li><li>Reservations</li>
+            <li>Restaurant &amp; bar</li><li>Billing &amp; GST</li><li>Reports</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <div class="panel__hd alt">Signed in as &#8212; F&amp;B Manager</div>
+          <ul class="menu" id="fnbMenu">
+            <li data-hide>Front desk</li><li data-hide>Room rack</li><li data-hide>Reservations</li>
+            <li>Restaurant &amp; bar</li><li data-hide>Billing &amp; GST</li><li data-hide>Reports</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 the website -->
+    <section class="scene" data-s="7">
+      <div class="scene__hd"><b>Your own website</b><span>Direct bookings, no commission</span></div>
+      <div class="sitecard">
+        <div class="sitebar"><i></i><i></i><i></i><span id="siteUrl">kaverigrand.com</span></div>
+        <div class="sitehero">
+          <small id="siteLoc">Coimbatore</small>
+          <b id="siteName">Kaveri Grand</b>
+          <span class="bk">Book direct</span>
+        </div>
+      </div>
+      <div class="moneyrow">
+        <div class="money bad"><b>&#8377;18</b><span>Lost per &#8377;100 via OTA</span></div>
+        <div class="money"><b>&#8377;100</b><span>Kept when they book direct</span></div>
+      </div>
+    </section>
+
+    <!-- 9 close -->
+    <section class="scene" data-s="8">
+      <div class="close">
+        <h3 id="closeH">The whole hotel, on one screen.</h3>
+        <p>Website, front desk, restaurant, housekeeping, stock, transport and GST billing &#8212;
+           one flat price, everything included.</p>
+        <div class="close__acts">
+          <a class="cta wa" id="waLink" href="#">Talk to us on WhatsApp</a>
+          <a class="cta ghost" id="demoLink" href="#" target="_blank" rel="noopener">Open the live demo</a>
+        </div>
+        <p class="close__fine">No obligation. We will show you your own hotel set up inside it.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="bar">
+    <div class="dots" id="dots"></div>
+    <div class="ctrl">
+      <button id="pause">Pause</button>
+      <button id="restart">Restart</button>
+    </div>
+  </div>
+
+  <p class="foot">A self-running tour &#8212; it plays by itself. Touch any bar to jump.</p>
+</div>
+
+<script>
+/* ============================================================
+   CHANGE THESE TWO LINES
+   ============================================================ */
+var WHATSAPP_NUMBER = "919000000000";      /* your number, country code, no + or spaces */
+var DEMO_URL = "https://bookings.clientneedz.com/";
+/* ========================================================== */
+
+var q = new URLSearchParams(location.search);
+var HOTEL = (q.get("h") || "").trim();
+var CITY  = (q.get("c") || "").trim();
+
+if (HOTEL) {
+  document.getElementById("brandLine").textContent = HOTEL;
+  document.getElementById("crestLetter").textContent = HOTEL.charAt(0).toUpperCase();
+  document.getElementById("siteName").textContent = HOTEL;
+  document.getElementById("siteUrl").textContent =
+    HOTEL.toLowerCase().replace(/[^a-z0-9]/g, "") + ".com";
+  document.getElementById("closeH").textContent = HOTEL + ", on one screen.";
+}
+if (CITY) document.getElementById("siteLoc").textContent = CITY;
+
+var waMsg = "Hello, I saw the hotel system tour" + (HOTEL ? " for " + HOTEL : "") + ". Please send me the details.";
+document.getElementById("waLink").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
+document.getElementById("demoLink").href = DEMO_URL + (HOTEL ? "?h=" + encodeURIComponent(HOTEL) + (CITY ? "&c=" + encodeURIComponent(CITY) : "") : "");
+
+/* ---------- the nine beats: caption + the spoken line ---------- */
+var SCENES = [
+  { ms:7000, h:"Every check-in takes three to five minutes.",
+    p:"Find the booking. Photocopy the ID. Hunt for a clean room. Write it in the register. The guest stands there through all of it.",
+    vo:"Every check-in takes three to five minutes. Watch this one." },
+
+  { ms:13000, h:"A guest who has stayed before checks in in seconds.",
+    p:"His ID, his card and his preferences are already on file. One click uses them, assigns the room and cuts the key.",
+    vo:"A guest who has stayed before. One click. His ID, his card and his room preference are already on file. Eight seconds. Key issued." },
+
+  { ms:9000, h:"Every room in the hotel, on one screen.",
+    p:"Sold, arriving, being cleaned, ready to sell \u2014 updating as the day moves.",
+    vo:"Every room in the hotel on one screen. Sold, arriving, being cleaned, ready to sell. No register, no phone call to housekeeping." },
+
+  { ms:11000, h:"And eighteen desks behind it.",
+    p:"Reservations, both tills, housekeeping, stock, guest history, channels, banquets, transport, cameras, staff duty and reports.",
+    vo:"And behind that desk: reservations, the restaurant and bar tills, housekeeping, stock, guest history, channels, banquets, cameras, staff duty, reports." },
+
+  { ms:10000, h:"Airport runs, drivers and vehicles.",
+    p:"Every pickup and drop against a flight and a vehicle \u2014 and the guest is told who is coming.",
+    vo:"Airport pickups and drops run from the transport desk. Vehicle, driver, and the guest gets the chauffeur's name before they land." },
+
+  { ms:11000, h:"The bill writes itself.",
+    p:"Correct tax split, correct SAC codes, sequential number, amount in words.",
+    vo:"Check a guest out and the G S T invoice writes itself. Correct tax split, sequential number, and it can never be edited afterwards." },
+
+  { ms:10000, h:"Every person sees only their own desk.",
+    p:"The restaurant manager cannot open the front desk or the folios \u2014 refused by the database itself.",
+    vo:"Every person signs in with their own I D. The restaurant manager cannot open the front desk. Refused at the server, not just hidden." },
+
+  { ms:11000, h:"And your own website, taking direct bookings.",
+    p:"The travel sites keep about eighteen rupees in every hundred. A guest who books on your own page keeps you all of it.",
+    vo:"And your own website, taking direct bookings. The travel sites keep eighteen rupees in every hundred. On your own page, you keep all of it." },
+
+  { ms:9000, h:"Everything included. One flat price.",
+    p:"",
+    vo:"Everything included, one flat price. Ask us for a demo on your own hotel." }
+];
+
+/* ---------- voice ---------- */
+var synth = window.speechSynthesis || null;
+var soundOn = false, voice = null;
+
+function pickVoice(){
+  if (!synth) return;
+  var vs = synth.getVoices() || [];
+  if (!vs.length) return;
+  var want = ["en-IN","en_IN","en-GB","en_GB","en-AU","en-US"];
+  for (var w = 0; w < want.length; w++) {
+    for (var k = 0; k < vs.length; k++) {
+      if ((vs[k].lang || "").replace("_","-").toLowerCase() === want[w].replace("_","-").toLowerCase()) { voice = vs[k]; return; }
+    }
+  }
+  for (var j = 0; j < vs.length; j++) if (/^en/i.test(vs[j].lang || "")) { voice = vs[j]; return; }
+}
+if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+if (!synth) { var sb = document.getElementById("sound"); if (sb) sb.style.display = "none"; }
+
+/* Every go() takes a new turn number. Any callback that arrives late -
+   above all the onend that browsers fire when we cancel speech - checks
+   that it still owns the turn and otherwise does nothing. Without this,
+   cancelling scene 3's voice advances scene 4, and slides jump. */
+var turn = 0;
+
+function speakLine(text, mine, whenDone){
+  if (!synth || !text) { whenDone(); return; }
+  /* a speak() issued in the same tick as a cancel() is swallowed by Chrome */
+  setTimeout(function () {
+    if (mine !== turn) return;
+    try {
+      var u = new SpeechSynthesisUtterance(text);
+      if (voice) u.voice = voice;
+      u.rate = 0.95; u.pitch = 1; u.volume = 1;
+      u.onend   = function(){ if (mine === turn) whenDone(); };
+      u.onerror = function(){ if (mine === turn) whenDone(); };
+      synth.speak(u);
+    } catch (e) { if (mine === turn) whenDone(); }
+  }, 140);
+}
+
+/* ---------- player ---------- */
+var i = 0, advTimer = null, guardTimer = null, playing = true;
+var scenes = document.querySelectorAll(".scene");
+var dotsEl = document.getElementById("dots");
+
+SCENES.forEach(function (_, n) {
+  var b = document.createElement("button");
+  b.className = "dot"; b.type = "button";
+  b.setAttribute("aria-label", "Scene " + (n + 1));
+  b.innerHTML = "<i></i>";
+  b.addEventListener("click", function () { go(n); });
+  dotsEl.appendChild(b);
+});
+var dots = dotsEl.querySelectorAll(".dot");
+
+function estMs(n){
+  if (!soundOn) return SCENES[n].ms;
+  var w = SCENES[n].vo.split(/\s+/).length;
+  return Math.max(SCENES[n].ms, (w / 2.4) * 1000 + 1600);
+}
+
+function paintDots(dur){
+  dots.forEach(function (d, n) {
+    d.className = "dot" + (n < i ? " done" : "");
+    var bar = d.querySelector("i");
+    bar.style.animation = "none";
+    if (n < i) { bar.style.transition = "none"; bar.style.width = "100%"; }
+    else if (n > i) { bar.style.transition = "none"; bar.style.width = "0"; }
+    else {
+      bar.style.transition = "none";
+      bar.style.width = "0";
+      void bar.offsetWidth;
+      if (playing) {
+        bar.style.transition = "width " + (dur / 1000) + "s linear";
+        bar.style.width = "100%";
+      }
+    }
+  });
+}
+
+function halt(){
+  turn++;                                   /* orphan every pending callback */
+  clearTimeout(advTimer); clearTimeout(guardTimer);
+  advTimer = guardTimer = null;
+  if (synth) { try { synth.cancel(); } catch (e) {} }
+}
+
+function go(n) {
+  halt();
+  var mine = turn;
+
+  i = ((n % SCENES.length) + SCENES.length) % SCENES.length;
+  scenes.forEach(function (s) { s.classList.toggle("on", +s.dataset.s === i); });
+  document.getElementById("capN").textContent =
+    String(i + 1).padStart(2, "0") + " / " + String(SCENES.length).padStart(2, "0");
+  document.getElementById("capH").textContent = SCENES[i].h;
+  document.getElementById("capP").textContent = SCENES[i].p;
+
+  var dur = estMs(i);
+  paintDots(dur);
+  run(i);
+  if (!playing) return;
+
+  var used = false;
+  function advance(){
+    if (mine !== turn || used) return;      /* stale, or already advancing */
+    used = true;
+    advTimer = setTimeout(function () {
+      if (mine === turn) go(i + 1);
+    }, soundOn ? 650 : 0);
+  }
+
+  if (soundOn && synth) {
+    speakLine(SCENES[i].vo, mine, advance);
+    /* only a backstop, in case a browser never reports the end of speech */
+    guardTimer = setTimeout(advance, dur + 8000);
+  } else {
+    advTimer = setTimeout(function () {
+      if (mine === turn) go(i + 1);
+    }, dur);
+  }
+}
+
+/* ---------- per-scene animation ---------- */
+var anims = [];
+function stopAnims(){ anims.forEach(function(a){ clearInterval(a); clearTimeout(a); }); anims = []; }
+
+var MODULES = [
+  ["Front of house", ["Dashboard","Front desk","Room rack","Reservations","Guest CRM"]],
+  ["Outlets",        ["Restaurant POS","Bar POS"]],
+  ["Commercial",     ["Channels & OTAs","Guest outreach","Banquets & events"]],
+  ["Guest services", ["Transport desk","International","Cameras","Billing & GST"]],
+  ["Back of house",  ["Housekeeping","Inventory","Team & shifts","Reports"]]
+];
+
+function run(n) {
+  stopAnims();
+
+  if (n === 0) {
+    var t = 0, el = document.getElementById("clockSlow");
+    var qEl = document.getElementById("queue");
+    qEl.innerHTML = "";
+    for (var k = 0; k < 4; k++) { var b = document.createElement("i"); if (k) b.className = "w"; qEl.appendChild(b); }
+    el.textContent = "0:00";
+    var iv = setInterval(function () {
+      t += 7; if (t > 227) { t = 227; clearInterval(iv); }
+      el.textContent = Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0");
+    }, 190);
+    anims.push(iv);
+  }
+
+  if (n === 1) {
+    var f = document.getElementById("clockFast");
+    var btn = document.getElementById("xbtn");
+    var stamp = document.getElementById("ciStamp");
+    var lbl = document.getElementById("fastLbl");
+    f.textContent = "0.0s"; stamp.innerHTML = "&#8212;"; btn.classList.remove("press");
+    lbl.style.opacity = ".35";
+    anims.push(setTimeout(function () { btn.classList.add("press"); }, 2600));
+    anims.push(setTimeout(function () {
+      var v = 0;
+      var iv2 = setInterval(function () {
+        v += 0.4;
+        if (v >= 7.8) { v = 7.8; clearInterval(iv2); lbl.style.opacity = "1";
+          stamp.textContent = "Checked in \u00B7 7.8s"; }
+        f.textContent = v.toFixed(1) + "s";
+      }, 55);
+      anims.push(iv2);
+    }, 3100));
+  }
+
+  if (n === 2) {
+    var rack = document.getElementById("rack");
+    rack.innerHTML = "";
+    var cells = [];
+    for (var r = 0; r < 96; r++) { var c = document.createElement("i"); rack.appendChild(c); cells.push(c); }
+    var plan = [];
+    for (var r2 = 0; r2 < 96; r2++)
+      plan.push(r2 % 11 === 0 ? "ooo" : r2 % 3 === 0 ? "occ" : r2 % 7 === 0 ? "arr" : r2 % 5 === 0 ? "dirty" : "");
+    var s = 0;
+    var iv3 = setInterval(function () {
+      for (var z = 0; z < 6 && s < 96; z++, s++) if (plan[s]) cells[s].className = plan[s];
+      if (s >= 96) clearInterval(iv3);
+    }, 55);
+    anims.push(iv3);
+  }
+
+  if (n === 3) {
+    var rail = document.getElementById("sweepRail");
+    var ttl = document.getElementById("sweepTtl");
+    var cnt = document.getElementById("sweepN");
+    rail.innerHTML = "";
+    var flat = [];
+    MODULES.forEach(function (g) {
+      var lb = document.createElement("div");
+      lb.className = "sweep__grp"; lb.textContent = g[0];
+      rail.appendChild(lb);
+      g[1].forEach(function (m) {
+        var d = document.createElement("div");
+        d.className = "sweep__i"; d.textContent = m;
+        rail.appendChild(d); flat.push(d);
+      });
+    });
+    cnt.textContent = "0 of 18";
+    var p = -1;
+    var iv4 = setInterval(function () {
+      if (p >= 0) flat[p].classList.remove("lit");
+      p++;
+      if (p >= flat.length) { clearInterval(iv4); cnt.textContent = "18 of 18"; return; }
+      flat[p].classList.add("lit");
+      ttl.textContent = flat[p].textContent;
+      cnt.textContent = (p + 1) + " of 18";
+      /* keep the lit row in view inside the rail */
+      var top = flat[p].offsetTop - 96;
+      rail.scrollTop = top > 0 ? top : 0;
+    }, 480);
+    anims.push(iv4);
+  }
+
+  if (n === 4) {
+    var trips = document.querySelectorAll("#trips .trip");
+    var sent = document.getElementById("sent");
+    trips.forEach(function (t2) { t2.classList.remove("in"); });
+    sent.classList.remove("in");
+    trips.forEach(function (t2, ix) {
+      anims.push(setTimeout(function () { t2.classList.add("in"); }, 400 + ix * 550));
+    });
+    anims.push(setTimeout(function () { sent.classList.add("in"); }, 2900));
+  }
+
+  if (n === 5) {
+    var no = document.getElementById("invNo");
+    var full = "K/26-27/0348";
+    no.textContent = "";
+    var p2 = 0;
+    anims.push(setTimeout(function () {
+      var iv5 = setInterval(function () {
+        no.textContent = full.slice(0, ++p2);
+        if (p2 >= full.length) clearInterval(iv5);
+      }, 70);
+      anims.push(iv5);
+    }, 1400));
+  }
+
+  if (n === 6) {
+    var items = document.querySelectorAll("#fnbMenu li");
+    items.forEach(function (li) { li.classList.remove("gone"); });
+    anims.push(setTimeout(function () {
+      document.querySelectorAll("#fnbMenu li[data-hide]").forEach(function (li, ix) {
+        anims.push(setTimeout(function () { li.classList.add("gone"); }, ix * 300));
+      });
+    }, 2600));
+  }
+}
+
+/* ---------- controls ---------- */
+document.getElementById("sound").addEventListener("click", function () {
+  soundOn = !soundOn;
+  this.classList.toggle("on", soundOn);
+  document.getElementById("soundTxt").textContent = soundOn ? "Sound on" : "Turn on sound";
+  halt();
+  /* restart the current beat so the voice and the picture start together */
+  playing = true;
+  document.getElementById("pause").textContent = "Pause";
+  go(i);
+});
+
+document.getElementById("pause").addEventListener("click", function () {
+  playing = !playing;
+  this.textContent = playing ? "Pause" : "Play";
+  if (playing) { go(i); }
+  else { halt(); stopAnims(); paintDots(0); }
+});
+
+document.getElementById("restart").addEventListener("click", function () {
+  playing = true;
+  document.getElementById("pause").textContent = "Pause";
+  go(0);
+});
+
+go(0);
+</script>

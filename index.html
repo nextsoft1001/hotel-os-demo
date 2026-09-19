@@ -1,7 +1,31 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Sales demonstration of a hotel operating system. Not a live booking site.">
 <title>Kaveri Grand</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+#demoFlag{position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#1A2230;color:#F3F1EC;font:500 12.5px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;padding:8px 14px;display:flex;gap:10px;align-items:center;justify-content:center;text-align:center;flex-wrap:wrap;box-shadow:0 -1px 0 rgba(0,0,0,.25)}
+#demoFlag b{color:#E3C77A;font-weight:700}
+#demoFlag a{color:#E3C77A;text-decoration:underline}
+#demoFlag button{background:none;border:1px solid #5A6472;color:#C9CEDA;border-radius:2px;font:inherit;padding:2px 8px;cursor:pointer;margin-left:4px}
+@media print{#demoFlag{display:none}}
+</style>
+<div id="demoFlag" role="note">
+<span><b>Demonstration only.</b> Nothing entered here is saved &mdash; closing the tab discards it. ID documents are not read automatically, payments are not processed, and role rules are enforced in this page rather than on a server. <a href="#demoScope" onclick="var e=document.getElementById('demoScope');if(e){e.hidden=!e.hidden;}return false;">What is real?</a></span>
+<button type="button" onclick="this.parentNode.style.display='none'">Hide</button>
+</div>
+<div id="demoScope" hidden style="position:fixed;left:50%;bottom:52px;transform:translateX(-50%);z-index:99999;max-width:560px;width:calc(100% - 28px);background:#FFF;color:#1A2230;border:1px solid #1A2230;border-radius:3px;padding:16px 18px;font:400 13.5px/1.55 system-ui,-apple-system,Segoe UI,sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.28);max-height:60vh;overflow:auto">
+<b style="display:block;margin-bottom:7px;font-size:14.5px">What this demonstration does and does not do</b>
+<p style="margin:0 0 9px"><b>Real:</b> every screen, the room rack, the folio arithmetic, the approval rules and the GST invoice layout. A charge posted in the restaurant genuinely reaches the guest folio and the invoice.</p>
+<p style="margin:0 0 9px"><b>Simulated:</b> the ID scan reads nothing &mdash; the clerk types the number. No payment is processed. Channel, WhatsApp, Tally and C-Form connections are not live. Tax figures are a specimen layout, not certified rates.</p>
+<p style="margin:0 0 9px"><b>Not retained:</b> nothing survives a refresh. There is no database behind this page, so please do not enter a real guest.</p>
+<button type="button" onclick="document.getElementById('demoScope').hidden=true" style="background:#1A2230;color:#fff;border:0;border-radius:2px;padding:6px 12px;font:inherit;cursor:pointer">Close</button>
+</div>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 
 <style>
@@ -4607,7 +4631,7 @@ function capSave(dataUrl){
   capClose();
   capPaint();
   if(capKind==="id") capAutoRead();
-  toast((capKind==="face"?"Guest photo":"ID document")+" captured and attached to this check-in.");
+  toast((capKind==="face"?"Guest photo":"ID document")+" captured. The number is not read automatically \u2014 type it from the document.");
 }
 function capPaint(){
   ["face","id"].forEach(function(k){
@@ -4628,11 +4652,12 @@ function capPaint(){
 }
 /* simulated document read \u2014 in production this is OCR/MRZ or Aadhaar offline QR */
 function capAutoRead(){
+  /* This build does NOT read the document. No OCR runs anywhere in this file.
+     The number is typed by the clerk, exactly as it is on paper today. */
   var sel=document.getElementById("ciIdType"), no=document.getElementById("ciIdNo");
   if(!sel||!no) return;
-  if(sel.value==="Aadhaar"){ no.value="XXXX XXXX 4417"; }
-  else if(sel.value==="Passport"){ no.value="Z" + (3000000+Math.floor(Math.random()*900000)); }
-  else { no.value="DL-" + (10000000+Math.floor(Math.random()*8999999)); }
+  no.value="";
+  no.placeholder="Type the number from the document";
   no.dispatchEvent(new Event("input"));
   ciCompliance();
 }
@@ -5091,7 +5116,7 @@ function invView(ix){
   var cg=Math.round(i.tax/2), sg=i.tax-cg;
   var rate=i.rate?(i.rate/2+"% + "+i.rate/2+"%"):"as applicable";
   mdOpen('<div class="taxinv">'
-   +'<div class="hd"><span class="tin">Tax Invoice</span>'
+   +'<div class="hd"><span class="tin">Tax Invoice <span style="font:600 10px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#9B2F26;border:1px solid #9B2F26;padding:2px 5px;border-radius:2px;vertical-align:middle;margin-left:6px;">Specimen</span></span>'
    +'<div style="font-family:var(--serif);font-size:21px;letter-spacing:.14em;">'+titleCase(BRAND.name)+'</div>'
    +'<div style="font-size:11px;color:var(--muted);margin-top:3px;">'+(d.billAddr||"")+'<br>'+gst+'</div></div>'
    +'<div class="meta"><span>Invoice <b class="mono">'+i.no+'</b></span><span>01 Sep 2026 &middot; '+i.time+'</span><span>Place of supply: '+(d.loc||"\u2014")+'</span></div>'
@@ -5670,7 +5695,7 @@ if(!AUTH.in){ var vo=document.getElementById("viewOps"); if(vo && !vo.hidden){ _
   var Q;
   try{ Q=new URLSearchParams(window.location.search); }catch(e){ return; }
   function g(){ for(var i=0;i<arguments.length;i++){ var v=Q.get(arguments[i]);
-    if(v!==null && String(v).trim()!=="") return String(v).trim(); } return ""; }
+    if(v!==null && String(v).trim()!=="") return esc(String(v).trim()); } return ""; }
 
   var pName=g("h","hotel"), pCity=g("c","city"), pRooms=g("r","rooms"),
       pSub=g("s","sub"), pAddr=g("a","addr"), pAir=g("air"), pReg=g("g","region"),
@@ -5754,7 +5779,7 @@ if(!AUTH.in){ var vo=document.getElementById("viewOps"); if(vo && !vo.hidden){ _
 (function(){
   var Q; try{ Q=new URLSearchParams(window.location.search); }catch(e){ return; }
   function g(){ for(var i=0;i<arguments.length;i++){ var v=Q.get(arguments[i]);
-    if(v!==null&&String(v).trim()!=="") return String(v).trim(); } return ""; }
+    if(v!==null&&String(v).trim()!=="") return esc(String(v).trim()); } return ""; }
   var pName=g("h","hotel"), pCity=g("c","city"), pRooms=g("r","rooms"), pAddr=g("a","addr");
   if(!pName) return;
   var nRooms=parseInt(pRooms,10)||0;
@@ -5817,7 +5842,7 @@ if(!AUTH.in){ var vo=document.getElementById("viewOps"); if(vo && !vo.hidden){ _
 /* pass 3: a personalised hotel's footer must show its name once, not name + tagline */
 (function(){
   var Q; try{ Q=new URLSearchParams(window.location.search); }catch(e){ return; }
-  var pName=(Q.get("h")||Q.get("hotel")||"").trim();
+  var pName=esc((Q.get("h")||Q.get("hotel")||"").trim());
   if(!pName) return;
   var _fn=fullNameOf;
   fullNameOf=function(b){ return (b && b.key==="custom" && b.name===pName) ? titleCase(b.name) : _fn(b); };

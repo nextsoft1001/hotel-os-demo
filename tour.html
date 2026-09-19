@@ -331,7 +331,7 @@ body{ margin:0; background:var(--night); color:var(--linen);
 
     <!-- 7 the wall -->
     <section class="scene" data-s="6">
-      <div class="scene__hd"><b>Two staff, two logins</b><span>Enforced in the database</span></div>
+      <div class="scene__hd"><b>Two staff, two logins</b><span>Each role sees only its own desk</span></div>
       <div class="two">
         <div class="panel">
           <div class="panel__hd">Signed in as &#8212; Owner</div>
@@ -397,8 +397,8 @@ body{ margin:0; background:var(--night); color:var(--linen);
 /* ============================================================
    CHANGE THESE TWO LINES
    ============================================================ */
-var WHATSAPP_NUMBER = "919000000000";      /* your number, country code, no + or spaces */
-var DEMO_URL = "https://bookings.clientneedz.com/";
+var WHATSAPP_NUMBER = "";   /* set the real WhatsApp Business number to show the button */      /* your number, country code, no + or spaces */
+var DEMO_URL = "https://booking.clientneedz.com/";
 /* ========================================================== */
 
 var q = new URLSearchParams(location.search);
@@ -416,7 +416,15 @@ if (HOTEL) {
 if (CITY) document.getElementById("siteLoc").textContent = CITY;
 
 var waMsg = "Hello, I saw the hotel system tour" + (HOTEL ? " for " + HOTEL : "") + ". Please send me the details.";
-document.getElementById("waLink").href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
+var _wa = document.getElementById("waLink");
+if (_wa) {
+  if (WHATSAPP_NUMBER) {
+    _wa.href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(waMsg);
+  } else {
+    /* No number configured yet - hide the button rather than hand a prospect a dead link. */
+    _wa.style.display = "none";
+  }
+}
 document.getElementById("demoLink").href = DEMO_URL + (HOTEL ? "?h=" + encodeURIComponent(HOTEL) + (CITY ? "&c=" + encodeURIComponent(CITY) : "") : "");
 
 /* ---------- the nine beats: caption + the spoken line ---------- */
@@ -446,8 +454,8 @@ var SCENES = [
     vo:"Check a guest out and the G S T invoice writes itself. Correct tax split, sequential number, and it can never be edited afterwards." },
 
   { ms:10000, h:"Every person sees only their own desk.",
-    p:"The restaurant manager cannot open the front desk or the folios \u2014 refused by the database itself.",
-    vo:"Every person signs in with their own I D. The restaurant manager cannot open the front desk. Refused at the server, not just hidden." },
+    p:"The restaurant manager cannot open the front desk or the folios \u2014 each login opens only its own desk.",
+    vo:"Every person signs in with their own I D. The restaurant manager cannot open the front desk, only their own." },
 
   { ms:11000, h:"And your own website, taking direct bookings.",
     p:"The travel sites keep about eighteen rupees in every hundred. A guest who books on your own page keeps you all of it.",

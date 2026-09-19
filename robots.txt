@@ -1,0 +1,4 @@
+# Sales demonstration workspace. Not a live hotel and not a booking site.
+# Deliberately excluded from search indexes.
+User-agent: *
+Disallow: /
